@@ -1,0 +1,71 @@
+# ══════════════════════════════════════════════════════════════════
+#   VivaSim — Explainable Interview Intelligence System
+#   requirements.txt — Python Package Dependencies
+# ══════════════════════════════════════════════════════════════════
+#
+#   HOW TO INSTALL:
+#   ───────────────
+#   Step 1: Create a virtual environment (recommended)
+#           python -m venv venv
+#
+#   Step 2: Activate it
+#           Windows  →  venv\Scripts\activate
+#           Mac/Linux → source venv/bin/activate
+#
+#   Step 3: Install all dependencies
+#           pip install -r requirements.txt
+#
+#   Step 4: Download required NLP models
+#           python -m spacy download en_core_web_sm
+#           python -m nltk.downloader punkt stopwords wordnet averaged_perceptron_tagger
+#
+# ══════════════════════════════════════════════════════════════════
+
+
+# ──────────────────────────────────────────
+# WEB FRAMEWORK
+# ──────────────────────────────────────────
+
+# Flask — lightweight Python web framework
+# Used for routing, templates, and request handling
+flask==3.0.3
+
+# Werkzeug — WSGI utility library (Flask dependency)
+# Provides routing, request/response wrappers
+werkzeug==3.0.3
+
+# Jinja2 — HTML templating engine (Flask uses this internally)
+# Used in all our .html template files
+jinja2==3.1.4
+
+
+# ──────────────────────────────────────────
+# NATURAL LANGUAGE PROCESSING
+# ──────────────────────────────────────────
+
+# spaCy — industrial-strength NLP library
+# Used for: tokenization, POS tagging, sentence detection
+# After install, run: python -m spacy download en_core_web_sm
+spacy==3.7.4
+
+# NLTK — Natural Language Toolkit
+# Used for: stopword removal, stemming, tokenization helpers
+# After install, run the downloader commands listed above
+nltk==3.8.1
+
+
+# ──────────────────────────────────────────
+# DATABASE
+# ──────────────────────────────────────────
+
+# SQLite3 is included in Python's standard library — no install needed.
+# No additional package required for SQLite.
+
+
+# ──────────────────────────────────────────
+# UTILITIES
+# ──────────────────────────────────────────
+
+# python-dotenv — loads environment variables from a .env file
+# Useful for storing SECRET_KEY, DB path, etc. securely
+python-dotenv==1.0.1

@@ -1,0 +1,99 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<!-- ═══ HEADER ═══ -->
+<section class="section">
+    <span class="badge">Configuration</span>
+    <h2>Settings</h2>
+    <p class="muted">Adjust how VivaSim evaluates your interview answers.</p>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ SETTINGS FORM ═══ -->
+<section class="section">
+    <form method="POST" action="/settings" class="settings-form">
+
+        <div class="settings-card">
+            <h3>General</h3>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <label for="language">Language</label>
+                    <p class="muted">Language used for NLP analysis</p>
+                </div>
+                <select id="language" name="language" class="setting-input">
+                    <option value="en" selected>English</option>
+                </select>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <label for="difficulty">Difficulty</label>
+                    <p class="muted">Default question difficulty level</p>
+                </div>
+                <select id="difficulty" name="difficulty" class="setting-input">
+                    <option value="easy">Easy</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <label for="category">Question Category</label>
+                    <p class="muted">Type of interview questions to practice</p>
+                </div>
+                <select id="category" name="category" class="setting-input">
+                    <option value="technical" selected>Technical</option>
+                    <option value="hr">HR</option>
+                    <option value="behavioral">Behavioral</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h3>Evaluation</h3>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <label>Evaluation Mode</label>
+                    <p class="muted">How answers are scored</p>
+                </div>
+                <span class="setting-readonly">Explainable (Rule-Based)</span>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <label for="kw_weight">Keyword Weight</label>
+                    <p class="muted">How much keyword relevance affects the final score</p>
+                </div>
+                <select id="kw_weight" name="kw_weight" class="setting-input">
+                    <option value="0.4">40%</option>
+                    <option value="0.6" selected>60%</option>
+                    <option value="0.7">70%</option>
+                </select>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <label for="struct_weight">Structure Weight</label>
+                    <p class="muted">How much answer structure affects the final score</p>
+                </div>
+                <select id="struct_weight" name="struct_weight" class="setting-input">
+                    <option value="0.3">30%</option>
+                    <option value="0.4" selected>40%</option>
+                    <option value="0.6">60%</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button type="submit" class="btn primary">Save Settings</button>
+            <a href="/" class="btn secondary">Cancel</a>
+        </div>
+
+    </form>
+</section>
+
+{% endblock %}

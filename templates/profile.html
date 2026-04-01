@@ -1,0 +1,124 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<section class="section">
+    <span class="badge">Skill Profile</span>
+    <h2>Your Interview Readiness</h2>
+    <p class="muted">These scores evolve as you practice more interviews.</p>
+</section>
+
+<div class="divider"></div>
+
+<div class="profile-grid section">
+
+    <!-- Communication -->
+    <div class="profile-card">
+        <div class="profile-icon">💬</div>
+        <h3>Communication</h3>
+
+        <p class="score">
+            {{ profile.communication if profile else 0 }}
+        </p>
+
+        <p class="muted">Clarity and articulation</p>
+
+        <div class="progress">
+            <div class="progress-bar" style="width: {{ profile.communication if profile else 0 }}%">
+            </div>
+        </div>
+    </div>
+
+    <!-- Technical -->
+    <div class="profile-card">
+        <div class="profile-icon">🔬</div>
+        <h3>Technical Depth</h3>
+
+        <p class="score">
+            {{ profile.technical_depth if profile else 0 }}
+        </p>
+
+        <p class="muted">Concept coverage & examples</p>
+
+        <div class="progress">
+            <div class="progress-bar blue" style="width: {{ profile.technical_depth if profile else 0 }}%">
+            </div>
+        </div>
+    </div>
+
+    <!-- Confidence -->
+    <div class="profile-card">
+        <div class="profile-icon">🎤</div>
+        <h3>Confidence</h3>
+
+        <p class="score">
+            {{ profile.confidence if profile else 0 }}
+        </p>
+
+        <p class="muted">Hesitation & certainty signals</p>
+
+        <div class="progress">
+            <div class="progress-bar green" style="width: {{ profile.confidence if profile else 0 }}%">
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="divider"></div>
+
+<!-- Sessions -->
+<section class="section">
+    <h2>Recent Sessions</h2>
+
+    {% if sessions %}
+    <table class="sessions-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Question</th>
+                <th>Score</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in sessions %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ s.question_text[:60] }}...</td>
+                <td>
+                    <span class="score-badge {{ 'good' if s.score >= 70 else ('avg' if s.score >= 40 else 'bad') }}">
+                        {{ s.score }}
+                    </span>
+                </td>
+                <td>{{ s.timestamp }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="muted">
+        No sessions yet.
+        <a href="/interview" class="link">Start your first interview →</a>
+    </p>
+    {% endif %}
+</section>
+
+<div class="divider"></div>
+
+<div class="section">
+    <a href="/interview" class="btn primary">Start New Interview</a>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    window.addEventListener('load', function () {
+        document.querySelectorAll('.progress-bar').forEach(function (bar) {
+            const target = bar.style.width;
+            bar.style.width = '0%';
+            setTimeout(() => bar.style.width = target, 300);
+        });
+    });
+</script>
+{% endblock %}

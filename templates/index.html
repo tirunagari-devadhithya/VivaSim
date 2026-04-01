@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+{% block content %}
+<!-- ═══ HERO ═══ -->
+<section class="hero section">
+    <span class="badge">Explainable AI System</span>
+    <h1>Explainable Interview Practice</h1>
+    <p class="subtitle">
+        Practice interviews with transparent, rule-based evaluation —
+        understand <b>why</b> you scored what you scored.
+    </p>
+    <div class="hero-actions">
+        <a href="/interview" class="btn primary">Start Interview</a>
+        <a href="/profile"   class="btn secondary">View Skill Profile</a>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ FEATURES ═══ -->
+<section class="features section">
+    <div class="feature-card">
+        <div class="feature-icon">🧠</div>
+        <h3>Explainable Scoring</h3>
+        <p>Every score is derived from explicit evaluation rules. No black-box decisions.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Skill-Based Analysis</h3>
+        <p>Communication, structure, and relevance are measured separately.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3>Interview Simulation</h3>
+        <p>Designed to mirror how interviewers actually evaluate candidates.</p>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section class="section">
+    <h2 class="section-title">How It Works</h2>
+    <div class="steps-row">
+        <div class="step">
+            <div class="step-num">1</div>
+            <h4>Get a Question</h4>
+            <p>Receive a categorized interview question — Technical, HR, or Behavioral.</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+            <div class="step-num">2</div>
+            <h4>Write Your Answer</h4>
+            <p>Type your response clearly. No time limits.</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+            <div class="step-num">3</div>
+            <h4>NLP Analysis</h4>
+            <p>The engine checks keyword coverage and answer structure.</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+            <div class="step-num">4</div>
+            <h4>Get Feedback</h4>
+            <p>Receive a score with a full explainable breakdown.</p>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ PRINCIPLE ═══ -->
+<section class="principle-section section">
+    <blockquote class="principle-quote">
+        "No score without explanation."
+        <span>Every evaluation in VivaSim is traceable to a specific rule.</span>
+    </blockquote>
+</section>
+
+{% endblock %}

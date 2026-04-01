@@ -1,0 +1,116 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="result-container section">
+
+    <h1 class="result-title">Interview Evaluation Result</h1>
+    <p class="muted">Here is how your answer was evaluated by VivaSim.</p>
+
+    {% for result in results %}
+
+    <div class="divider"></div>
+
+    <!-- SCORE CARD -->
+    <div class="score-card">
+        <h2>Overall Score</h2>
+
+        <div class="score-circle 
+            {{ 'good' if result.score >= 70 else ('avg' if result.score >= 40 else 'bad') }}">
+            <span id="score-value">{{ result.score }}</span>
+        </div>
+
+        <p class="score-label">Out of 100</p>
+
+        <p class="score-message">
+            {% if result.score >= 80 %}
+            Excellent! Outstanding answer covering all key concepts.
+            {% elif result.score >= 60 %}
+            Good answer. A few improvements can make it stronger.
+            {% elif result.score >= 40 %}
+            Average. You covered some basics but key concepts are missing.
+            {% else %}
+            Needs more work. Study the topic and try again.
+            {% endif %}
+        </p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- QUESTION REVIEW -->
+    <div class="reviewed-section">
+        <h2>Question Asked</h2>
+        <p class="question-text">{{ result.question_text }}</p>
+
+        <h2>Your Answer</h2>
+        <p class="answer-preview">{{ result.user_answer }}</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- BREAKDOWN -->
+    <div class="skills-section">
+        <h2>Evaluation Breakdown</h2>
+
+        <div class="skill">
+            <div class="skill-label">
+                <p>Keyword Relevance</p>
+                <span>{{ result.keyword_score }} / 100</span>
+            </div>
+            <div class="progress">
+                <div class="progress-bar" style="width: {{ result.keyword_score }}%">
+                </div>
+            </div>
+        </div>
+
+        <div class="skill">
+            <div class="skill-label">
+                <p>Answer Structure</p>
+                <span>{{ result.structure_score }} / 100</span>
+            </div>
+            <div class="progress">
+                <div class="progress-bar blue" style="width: {{ result.structure_score }}%">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- FEEDBACK -->
+    <div class="feedback-section">
+        <h2>Explainable Feedback</h2>
+
+        <div class="feedback-card suggestions">
+            <h4>💡 AI Feedback</h4>
+            <p>{{ result.feedback }}</p>
+        </div>
+    </div>
+
+    {% endfor %}
+
+    <div class="divider"></div>
+
+    <!-- ACTIONS -->
+    <div class="action-buttons">
+        <a href="/interview" class="btn primary">Try Another Question</a>
+        <a href="/" class="btn secondary">Back to Home</a>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    window.addEventListener('load', function () {
+        document.querySelectorAll('.progress-bar').forEach(function (bar) {
+            const target = bar.style.width;
+            bar.style.width = '0%';
+
+            setTimeout(function () {
+                bar.style.width = target;
+            }, 300);
+        });
+    });
+</script>
+{% endblock %}

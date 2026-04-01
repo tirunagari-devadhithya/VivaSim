@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title if title else "VivaSim" }} — Interview Intelligence</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+
+    <!-- ═══ NAVBAR ═══ -->
+    <header class="navbar">
+        <div class="nav-left">
+            <span class="logo">VivaSim</span>
+            <span class="product-tag">Interview Intelligence</span>
+        </div>
+        <nav class="nav-right">
+            <a href="/"          class="nav-link">Home</a>
+            <a href="/interview" class="nav-link">Interview</a>
+            <a href="/profile"   class="nav-link">Profile</a>
+            <a href="/settings"  class="nav-link">Settings</a>
+        </nav>
+    </header>
+
+    <!-- ═══ FLASH MESSAGES ═══ -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-box">
+                {% for category, message in messages %}
+                    <div class="flash flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- ═══ MAIN CONTENT ═══ -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="footer">
+        <p>VivaSim &mdash; Explainable Interview Intelligence &copy; 2024</p>
+        <p class="footer-sub">NLP &middot; Rule-Based Evaluation &middot; XAI</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {% block extra_scripts %}{% endblock %}
+
+</body>
+</html>
