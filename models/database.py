@@ -1,8 +1,7 @@
-# Database helper
 import sqlite3
 import os
 
-# Path to SQLite database
+# Database config
 DB_FOLDER = "database"
 DB_NAME = "vivasim.db"
 DB_PATH = os.path.join(DB_FOLDER, DB_NAME)
@@ -10,8 +9,7 @@ DB_PATH = os.path.join(DB_FOLDER, DB_NAME)
 
 def get_connection():
     """
-    Creates and returns a connection to the SQLite database.
-    Using a single function ensures consistent DB access.
+    Create and return SQLite connection.
     """
     connection = sqlite3.connect(DB_PATH)
     connection.row_factory = sqlite3.Row
@@ -20,29 +18,27 @@ def get_connection():
 
 def init_db():
     """
-    Initializes database and required tables.
-    This function runs once when the application starts.
+    Initialize all required tables and seed question bank.
     """
 
-    # Ensure database folder exists
+    # Ensure DB folder exists
     if not os.path.exists(DB_FOLDER):
         os.makedirs(DB_FOLDER)
 
     conn = get_connection()
     cursor = conn.cursor()
 
-    # Questions table
+    # ================= QUESTIONS TABLE =================
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS questions (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             question_text TEXT NOT NULL,
-            category TEXT,
-            difficulty TEXT,
-            keywords TEXT
+            keywords TEXT NOT NULL,
+            difficulty TEXT NOT NULL
         )
     """)
 
-    # Responses table
+    # ================= RESPONSES TABLE =================
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS responses (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -55,36 +51,95 @@ def init_db():
         )
     """)
 
-    # Skill profile table (important for explainability)
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS skill_profile (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            communication REAL,
-            technical REAL,
-            confidence REAL
-        )
-    """)
-    cursor.execute("""
-        INSERT OR IGNORE INTO questions
-        (id, question_text, category, difficulty, keywords)
-        VALUES
-        (1, 'What is REST API?',
-         'Technical', 'Medium',
-         'rest api client server http'),
-
-        (2, 'Explain Object-Oriented Programming.',
-         'Technical', 'Medium',
-         'class object inheritance polymorphism encapsulation')
-    """)
+    # ================= USER PROFILE =================
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS user_profile (
-        username TEXT PRIMARY KEY,
-        communication REAL DEFAULT 0,
-        technical_depth REAL DEFAULT 0,
-        confidence REAL DEFAULT 0,
-        total_sessions INTEGER DEFAULT 0
+            username TEXT PRIMARY KEY,
+            communication REAL DEFAULT 0,
+            technical_depth REAL DEFAULT 0,
+            confidence REAL DEFAULT 0,
+            total_sessions INTEGER DEFAULT 0
         )
     """)
+
+    # ================= QUESTION BANK =================
+    questions_data = [
+
+        # EASY
+        ("What is object-oriented programming?",
+         "oop class object inheritance polymorphism",
+         "easy"),
+
+        ("Explain the difference between a list and a tuple in Python.",
+         "list tuple mutable immutable python",
+         "easy"),
+
+        ("What is a REST API?",
+         "rest api http request response client server",
+         "easy"),
+
+        ("What is machine learning?",
+         "machine learning ai model data training",
+         "easy"),
+
+        ("What is a database?",
+         "database table records rows columns sql",
+         "easy"),
+
+        # MEDIUM
+        ("Explain polymorphism in object-oriented programming.",
+         "polymorphism inheritance overriding interface example",
+         "medium"),
+
+        ("What is the difference between process and thread?",
+         "process thread cpu memory concurrency",
+         "medium"),
+
+        ("How does a hash table work?",
+         "hash key value collision lookup",
+         "medium"),
+
+        ("Explain normalization in DBMS.",
+         "normalization database redundancy forms dependency",
+         "medium"),
+
+        ("Tell me about a challenge you faced and how you solved it.",
+         "challenge solution learning example",
+         "medium"),
+
+        # HARD
+        ("Design a scalable interview evaluation system architecture.",
+         "architecture scalability database api load balancing",
+         "hard"),
+
+        ("Explain how polymorphism supports runtime flexibility in large systems.",
+         "polymorphism runtime dynamic dispatch inheritance abstraction",
+         "hard"),
+
+        ("How would you optimize SQL queries for large datasets?",
+         "sql indexing joins optimization performance",
+         "hard"),
+
+        ("Explain deadlock and its prevention techniques.",
+         "deadlock mutual exclusion prevention scheduling",
+         "hard"),
+
+        ("How would you design an explainable AI scoring system?",
+         "ai explainability scoring model feedback transparency",
+         "hard")
+    ]
+
+    # Insert questions only if table is empty
+    cursor.execute("SELECT COUNT(*) FROM questions")
+    count = cursor.fetchone()[0]
+
+    if count == 0:
+        for question in questions_data:
+            cursor.execute("""
+                INSERT INTO questions
+                (question_text, keywords, difficulty)
+                VALUES (?, ?, ?)
+            """, question)
 
     conn.commit()
     conn.close()

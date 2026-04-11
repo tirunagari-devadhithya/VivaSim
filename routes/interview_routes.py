@@ -2,7 +2,8 @@ from flask import Blueprint, render_template, request
 
 from models.question_model import (
     get_random_questions,
-    get_question_by_id
+    get_question_by_id,
+    get_questions_by_difficulty
 )
 
 from services.interview_service import evaluate_answer
@@ -17,15 +18,18 @@ interview_bp = Blueprint(
 
 @interview_bp.route("/interview")
 def interview_page():
-    """
-    Display interview questions.
-    """
 
-    questions = get_random_questions(limit=3)
+    level = request.args.get("level", "easy")
+
+    questions = get_questions_by_difficulty(
+        level,
+        limit=3
+    )
 
     return render_template(
         "interview.html",
-        questions=questions
+        questions=questions,
+        level=level
     )
 
 

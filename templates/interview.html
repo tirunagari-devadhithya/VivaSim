@@ -16,6 +16,14 @@
 
 <div class="container mt-4">
 
+    <div class="mb-4">
+        <h3>Select Difficulty</h3>
+
+        <a href="/interview?level=easy" class="btn btn-success">Easy</a>
+        <a href="/interview?level=medium" class="btn btn-warning">Medium</a>
+        <a href="/interview?level=hard" class="btn btn-danger">Hard</a>
+    </div>
+
     <form method="POST" action="/evaluate">
 
         {% for q in questions %}
