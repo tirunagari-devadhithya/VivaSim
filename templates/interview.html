@@ -4,9 +4,7 @@
 
 <section class="session-header section mb-4">
     <div>
-        <span class="badge bg-warning text-dark">
-            INTERVIEW SESSION
-        </span>
+        <span class="session-badge">INTERVIEW SESSION</span>
         <h1 class="mt-3">Technical Interview</h1>
         <p class="text-muted">
             Focus on clarity, structure, and examples
@@ -16,12 +14,10 @@
 
 <div class="container mt-4">
 
-    <div class="mb-4">
-        <h3>Select Difficulty</h3>
-
-        <a href="/interview?level=easy" class="btn btn-success">Easy</a>
-        <a href="/interview?level=medium" class="btn btn-warning">Medium</a>
-        <a href="/interview?level=hard" class="btn btn-danger">Hard</a>
+    <div class="difficulty-tabs">
+        <a href="/interview?level=easy" class="{{ 'active' if level=='easy' }}">Easy</a>
+        <a href="/interview?level=medium" class="{{ 'active' if level=='medium' }}">Medium</a>
+        <a href="/interview?level=hard" class="{{ 'active' if level=='hard' }}">Hard</a>
     </div>
 
     <form method="POST" action="/evaluate">
@@ -29,19 +25,21 @@
         {% for q in questions %}
 
         <!-- Question Card -->
-        <div class="card shadow-sm p-4 mb-4">
+        <div class="card fade-in p-4 mb-4" style="animation-delay: {{ loop.index * 0.1 }}s">
 
-            <h3>Question {{ loop.index }}</h3>
-            <hr>
+            <div style="font-size: 0.85rem; color: #6b7280; font-weight: 500; letter-spacing: 1px;">
+                QUESTION {{ loop.index }} OF {{ questions|length }}
+            </div>
 
-            <p class="fs-5">
+            {% set pct = (loop.index / questions|length) * 100 %}
+            <p class="fs-5 mt-3">
                 {{ q.question_text }}
             </p>
 
         </div>
 
         <!-- Answer Card -->
-        <div class="card shadow-sm p-4 mb-4">
+        <div class="card fade-in p-4 mb-5" style="animation-delay: {{ (loop.index * 0.1) + 0.1 }}s">
 
             <h3>Your Response</h3>
 
@@ -56,12 +54,10 @@
 
         {% endfor %}
 
-        <div class="d-flex justify-content-between align-items-center mt-4">
-            <span class="text-muted">
-                💡 Tip: Structured answers score higher
-            </span>
+        <div class="d-flex justify-content-between align-items-center mt-3 fade-in" style="animation-delay: 0.8s">
+            <span class="tip">💡 Structured answers score higher</span>
 
-            <button type="submit" class="btn btn-primary btn-lg">
+            <button type="submit" class="btn btn-primary">
                 Submit for Evaluation →
             </button>
         </div>

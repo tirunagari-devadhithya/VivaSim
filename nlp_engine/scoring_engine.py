@@ -1,26 +1,30 @@
 # nlp_engine/scoring_engine.py
 
+from models.database import get_connection
+
 def calculate_total_score(keyword_result, structure_result):
     """
-    Calculates the final interview score using rule-based weighting.
-
-    Inputs
-    -------
-    keyword_result : dict
-        Output from keyword_analysis
-    structure_result : dict
-        Output from structure_analysis
-
-    Returns
-    -------
-    int
-        Final score between 0 and 100
+    Calculates the final interview score dynamically querying DB.
     """
+    conn = get_connection()
+    cursor = conn.cursor()
 
-    # Weight configuration (transparent for viva explanation)
-    KEYWORD_WEIGHT = 0.6
-    STRUCTURE_WEIGHT = 0.4
+    cursor.execute("""
+        SELECT keyword_weight, structure_weight
+        FROM user_settings
+        WHERE username = ?
+    """, ("demo_user",))
 
+    row = cursor.fetchone()
+    conn.close()
+
+    if row:
+        kw_weight = row["keyword_weight"]
+        st_weight = row["structure_weight"]
+    else:
+        kw_weight = 0.6
+        st_weight = 0.4
+        
     # Extract scores safely
     keyword_score = keyword_result.get("score", 0)
     structure_score = structure_result.get("score", 0)
@@ -30,9 +34,9 @@ def calculate_total_score(keyword_result, structure_result):
     structure_score = max(0, min(structure_score, 100))
 
     # Weighted calculation
-    total_score = (
-        (keyword_score * KEYWORD_WEIGHT) +
-        (structure_score * STRUCTURE_WEIGHT)
+    score = (
+        (keyword_score * kw_weight) +
+        (structure_score * st_weight)
     )
 
-    return round(total_score)
+    return int(round(score))

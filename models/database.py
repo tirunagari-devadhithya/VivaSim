@@ -69,6 +69,15 @@ def init_db():
         )
     """)
 
+    # ================= USER SETTINGS =================
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS user_settings (
+            username TEXT PRIMARY KEY,
+            keyword_weight REAL DEFAULT 0.6,
+            structure_weight REAL DEFAULT 0.4
+        )
+    """)
+
     # ================= QUESTION BANK =================
     questions_data = [
 
