@@ -1,132 +1,106 @@
-import sqlite3
-
-DB_PATH = "database/vivasim.db"
-
-
-def get_connection():
-    """
-    Create database connection.
-    """
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
-def initialize_profile_table():
-    """
-    Create user profile table if it doesn't exist.
-    """
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS user_profile (
-            username TEXT PRIMARY KEY,
-            communication REAL DEFAULT 0,
-            technical_depth REAL DEFAULT 0,
-            confidence REAL DEFAULT 0,
-            total_sessions INTEGER DEFAULT 0
-        )
-    """)
-
-    conn.commit()
-    conn.close()
+from models.database import get_connection
 
 
 def get_profile(username="demo_user"):
     """
     Fetch user profile scores.
+    Creates default row if user doesn't exist.
     """
-    initialize_profile_table()
-
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute(
-        "SELECT * FROM user_profile WHERE username=?",
-        (username,)
-    )
+    cursor.execute("""
+        SELECT *
+        FROM user_profile
+        WHERE username = ?
+    """, (username,))
 
     profile = cursor.fetchone()
 
-    conn.close()
+    if not profile:
+        cursor.execute("""
+            INSERT INTO user_profile
+            (username, communication, technical_depth, confidence, total_sessions)
+            VALUES (?, 0, 0, 0, 0)
+        """, (username,))
+        conn.commit()
 
+        cursor.execute("""
+            SELECT *
+            FROM user_profile
+            WHERE username = ?
+        """, (username,))
+        profile = cursor.fetchone()
+
+    conn.close()
     return profile
 
 
 def update_profile_scores(username, keyword_score, structure_score, final_score):
     """
-    Update running average scores after each interview.
+    Update running average profile metrics after each interview.
     """
-
-    initialize_profile_table()
-
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute(
-        "SELECT * FROM user_profile WHERE username=?",
-        (username,)
-    )
+    # Ensure row exists
+    cursor.execute("""
+        SELECT *
+        FROM user_profile
+        WHERE username = ?
+    """, (username,))
 
-    row = cursor.fetchone()
+    profile = cursor.fetchone()
 
-    if row is None:
-        # First interview attempt
+    if not profile:
         cursor.execute("""
             INSERT INTO user_profile
             (username, communication, technical_depth, confidence, total_sessions)
-            VALUES (?, ?, ?, ?, ?)
-        """, (
-            username,
-            structure_score,
-            keyword_score,
-            final_score,
-            1
-        ))
-
-    else:
-        previous_sessions = row["total_sessions"]
-        new_sessions = previous_sessions + 1
-
-        new_communication = round(
-            (
-                row["communication"] * previous_sessions
-                + structure_score
-            ) / new_sessions,
-            1
-        )
-
-        new_technical_depth = round(
-            (
-                row["technical_depth"] * previous_sessions
-                + keyword_score
-            ) / new_sessions,
-            1
-        )
-
-        new_confidence = round(
-            (
-                row["confidence"] * previous_sessions
-                + final_score
-            ) / new_sessions,
-            1
-        )
+            VALUES (?, 0, 0, 0, 0)
+        """, (username,))
+        conn.commit()
 
         cursor.execute("""
-            UPDATE user_profile
-            SET communication=?,
-                technical_depth=?,
-                confidence=?,
-                total_sessions=?
-            WHERE username=?
-        """, (
-            new_communication,
-            new_technical_depth,
-            new_confidence,
-            new_sessions,
-            username
-        ))
+            SELECT *
+            FROM user_profile
+            WHERE username = ?
+        """, (username,))
+        profile = cursor.fetchone()
+
+    current_comm = profile["communication"]
+    current_tech = profile["technical_depth"]
+    current_conf = profile["confidence"]
+    sessions = profile["total_sessions"]
+
+    new_sessions = sessions + 1
+
+    # Running average update
+    new_comm = round(
+        ((current_comm * sessions) + structure_score) / new_sessions, 2
+    )
+
+    new_tech = round(
+        ((current_tech * sessions) + keyword_score) / new_sessions, 2
+    )
+
+    new_conf = round(
+        ((current_conf * sessions) + final_score) / new_sessions, 2
+    )
+
+    cursor.execute("""
+        UPDATE user_profile
+        SET communication = ?,
+            technical_depth = ?,
+            confidence = ?,
+            total_sessions = ?
+        WHERE username = ?
+    """, (
+        new_comm,
+        new_tech,
+        new_conf,
+        new_sessions,
+        username
+    ))
 
     conn.commit()
     conn.close()

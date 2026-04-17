@@ -10,6 +10,8 @@ def evaluate_answer(question, user_answer):
     """
     Evaluates a single answer using the NLP engine, saves it, and returns the results.
     """
+    from models.database import get_connection
+    print("WRITE DB:", get_connection().execute("PRAGMA database_list").fetchall())
     
     # Process the text
     tokens = preprocess_text(user_answer)
@@ -21,7 +23,10 @@ def evaluate_answer(question, user_answer):
     )
 
     # Analyze structure
-    structure_result = analyze_structure(user_answer)
+    structure_result = analyze_structure(
+        user_answer,
+        question["difficulty"]
+    )
 
     # Calculate overall score
     total_score = calculate_total_score(
@@ -29,10 +34,10 @@ def evaluate_answer(question, user_answer):
         structure_result
     )
     update_profile_scores(
-        "demo_user",
-        keyword_score=keyword_result.get("score", 0),
-        structure_score=structure_result.get("score", 0),
-        final_score=total_score
+    "demo_user",
+    keyword_score=keyword_result.get("score", 0),
+    structure_score=structure_result.get("score", 0),
+    final_score=total_score
     )
 
     # Generate constructive feedback

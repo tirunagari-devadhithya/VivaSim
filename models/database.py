@@ -7,11 +7,18 @@ DB_NAME = "vivasim.db"
 DB_PATH = os.path.join(DB_FOLDER, DB_NAME)
 
 
+from flask import current_app
+
 def get_connection():
     """
     Create and return SQLite connection.
     """
-    connection = sqlite3.connect(DB_PATH)
+    db_path = current_app.config.get(
+        "DATABASE_PATH",
+        DB_PATH
+    )
+
+    connection = sqlite3.connect(db_path)
     connection.row_factory = sqlite3.Row
     return connection
 

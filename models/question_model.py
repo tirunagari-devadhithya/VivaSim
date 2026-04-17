@@ -41,17 +41,14 @@ def get_random_questions(limit=3):
 
 
 def get_questions_by_difficulty(level, limit=3):
-    """
-    Return random questions by selected difficulty.
-    level -> easy / medium / hard
-    """
+
     conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
         SELECT id, question_text, keywords, difficulty
         FROM questions
-        WHERE difficulty = ?
+        WHERE LOWER(difficulty)=?
         ORDER BY RANDOM()
         LIMIT ?
     """, (level.lower(), limit))

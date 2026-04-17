@@ -1,23 +1,33 @@
-def analyze_keywords(tokens, keywords):
+def analyze_keywords(tokens, expected_keywords):
     """
-    Compare tokens with expected keywords.
+    Flexible keyword relevance scoring.
+    Supports phrase splitting + partial match.
     """
 
-    if isinstance(keywords, str):
-        keywords = [k.strip().lower() for k in keywords.split(",")]
+    token_set = set([token.lower() for token in tokens])
 
-    tokens = [t.lower() for t in tokens]
+    expected = expected_keywords.lower().split()
 
-    matched = [k for k in keywords if k in tokens]
-    missing = [k for k in keywords if k not in tokens]
+    matched = []
+    missing = []
 
-    if len(keywords) == 0:
-        score = 0
-    else:
-        score = int((len(matched) / len(keywords)) * 100)
+    for keyword in expected:
+        # partial / exact word match
+        if keyword.lower() in token_set:
+            matched.append(keyword)
+        else:
+            # soft stem-like match
+            found = any(keyword in token or token in keyword for token in token_set)
+
+            if found:
+                matched.append(keyword)
+            else:
+                missing.append(keyword)
+
+    score = round((len(matched) / len(expected)) * 100)
 
     return {
         "score": score,
-        "matched": matched,
-        "missing": missing
+        "matched_keywords": matched,
+        "missing_keywords": missing
     }

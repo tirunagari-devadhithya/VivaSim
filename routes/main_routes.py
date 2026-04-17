@@ -17,9 +17,7 @@ def index():
     """
     return render_template("index.html")
 
-@main_bp.route("/profile")
-def profile():
-    return render_template("profile.html")
+
 
 @main_bp.route("/settings")
 def settings():
